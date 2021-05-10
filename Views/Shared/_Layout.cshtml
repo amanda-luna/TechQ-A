@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/Content/Site.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/PagedList.css" type="text/css"/>
+    <link href="~/Content/primary.css" rel="stylesheet" />
+    <link href="~/Content/stacks.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome.css" rel="stylesheet" />
+
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+<header class="top-bar js-top-bar top-bar__network">
+    <div class="wmx12 mx-auto grid ai-center h100">
+        <div class="-main grid--cell">
+            @Html.ActionLink("Tech Q&A", "Index", "Home")
+        </div>
+        
+
+        <ol class="overflow-x-auto ml-auto -secondary grid ai-center list-reset h100">
+            <li class="-ctas">@Html.ActionLink("Home", "Index", "Home")</li>
+            @Html.Partial("_LoginPartial")
+        </ol>
+    </div>
+</header>
+
+
+<body>
+    <div class="container">
+        <div id="content">
+            @RenderBody()
+            <footer><p>&copy; @DateTime.Now.Year - Q&A</p></footer>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

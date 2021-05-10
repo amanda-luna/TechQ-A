@@ -1,0 +1,70 @@
+﻿@model PagedList.IPagedList<StackOverFlowProject.Models.Question>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Questions List";
+}
+
+
+<div class="grid">
+    <h2 class="grid fl1 mb24 text-uppercase">List of Questions</h2>
+    <div class="ml12 aside-cta grid--cell print:d-none">
+        @Html.ActionLink("Ask a Question!", "Create", "Questions", new { sortOrder = "date" }, new { @class = "ws-nowrap s-btn s-btn__primary" })
+        @Html.ActionLink("Sort By Date", "Index", new { sortOrder = "date" }, new { @class = "ws-nowrap s-btn s-btn__primary" })
+        @Html.ActionLink("Sort By Answers", "Index", new { sortOrder = "answers" }, new { @class = "ws-nowrap s-btn s-btn__primary" })
+    </div>
+</div>
+
+@foreach (var question in Model)
+{
+    <div class="alert rounded-0">
+        <div class="question-summary">
+            <div class="statscontainer">
+                <div class="stats">
+                    <div class="vote">
+                        <div class="votes">
+                            <span class="vote-count-post">
+                                <strong>@(question.UpVote - question.DownVote)</strong>
+                            </span>
+                            <div class="viewcount">votes</div>
+                        </div>
+                    </div>
+                    <div class="status answered-accepted">
+                        <strong>@question.Answers.Count()</strong>
+                        <div class="answerscount">answers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="summary">
+                <h3>
+                    @Html.ActionLink(question.Title, "Details", "Questions", new { id = question.Id }, new { @class = "link" })
+                </h3>
+                <div class="excerpt">
+                    @question.Description
+                </div>
+                <div class="excerpt">
+                    <br />
+                    Created Date: <strong>@question.DateCreated.ToString("dd/MM/yyyy")</strong>
+                </div>
+                <div class="excerpt">
+                    <br />
+                    Author: <strong>@question.User.UserName</strong>
+                    <br />
+                    Reputation: <strong>@question.User.ReputationLevel</strong>
+                    @if (question.User.ReputationLevel >= 100)
+                    {
+                        <br />
+                        <img src="~/Content/medal.png" / width="30px" height="30px">
+                    }
+                </div>
+                @foreach (var tags in question.Tags)
+                {
+                    @Html.ActionLink(tags.Title, "TagsFiltered", "Home", new { tag = tags.Title }, new { @class = "tags post-tag" })
+                }
+            </div>
+
+        </div>
+    </div>
+}
+
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort }))

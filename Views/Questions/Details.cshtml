@@ -1,0 +1,113 @@
+﻿@model StackOverFlowProject.Models.Question
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<div class="alert rounded-0">
+    <h2>@Html.DisplayFor(model => model.Title)</h2>
+
+    <div class="question-summary">
+        <div class="statscontainer">
+            <div class="stats">
+                <div class="vote">
+                    <div class="votes">
+                        <button class="js-vote-up-btn grid--cell s-btn s-btn__unset c-pointer" onclick="location.href='@Url.Action("UpVote", "Questions", new { answerId = Model.Id, questionId = Model.Id })'">
+                            <svg aria-hidden="true" class="m0 svg-icon iconArrowUpLg" width="36" height="36" viewBox="0 0 36 36"><path d="M2 26h32L18 10 2 26z"></path></svg>
+                        </button>
+                        <span class="vote-count-post">
+                            <strong>@(Model.UpVote - Model.DownVote)</strong>
+                        </span>
+                        <div class="viewcount">votes</div>
+                        <button class="js-vote-down-btn grid--cell s-btn s-btn__unset c-pointer" onclick="location.href='@Url.Action("DownVote", "Questions", new { answerId = Model.Id, questionId = Model.Id })'">
+                            <svg aria-hidden="true" class="m0 svg-icon iconArrowDownLg" width="36" height="36" viewBox="0 0 36 36"><path d="M2 10h32L18 26 2 10z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="status answered-accepted">
+                    <strong>@Model.Answers.Count()</strong>
+                    <div class="answerscount">answers</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary">
+            <div class="excerpt">
+                @Model.Description
+            </div>
+            <div class="excerpt">
+                Created Date: <strong>@Model.DateCreated.ToString("dd/MM/yyyy")</strong>
+            </div>
+            <div class="excerpt">
+                <br />
+                Author: <strong>@Model.User.UserName</strong>
+                <br />
+                Reputation: <strong>@Model.User.ReputationLevel</strong>
+                @if (@Model.User.ReputationLevel >= 100)
+                {
+                    <br />
+                    <img src="~/Content/medal.png" / width="30px" height="30px"> 
+                }
+            </div>
+            @foreach (var tags in Model.Tags)
+            {
+                <div class="tags post-tag">@tags.Title</div>
+            }
+        </div>
+    </div>
+
+    <br />
+    <h3>Answers List</h3>
+    @foreach (var answer in Model.Answers)
+    {
+        <div class="question-summary">
+            <div class="statscontainer">
+                <div class="stats">
+                    <div class="vote">
+                        <div class="votes">
+                            <button class="js-vote-up-btn grid--cell s-btn s-btn__unset c-pointer" onclick="location.href='@Url.Action("UpVote", "Answers", new { answerId = answer.Id, questionId = Model.Id })'">
+                                <svg aria-hidden="true" class="m0 svg-icon iconArrowUpLg" width="36" height="36" viewBox="0 0 36 36"><path d="M2 26h32L18 10 2 26z"></path></svg>
+                            </button>
+                            <span class="vote-count-post">
+                                <strong>@(answer.UpVote - @answer.DownVote)</strong>
+                            </span>
+                            <div class="viewcount">votes</div>
+                            <button class="js-vote-down-btn grid--cell s-btn s-btn__unset c-pointer" onclick="location.href='@Url.Action("DownVote", "Answers", new { answerId = answer.Id, questionId = Model.Id })'">
+                                <svg aria-hidden="true" class="m0 svg-icon iconArrowDownLg" width="36" height="36" viewBox="0 0 36 36"><path d="M2 10h32L18 26 2 10z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    @if (answer.IsValid == true)
+                    {
+                        <div class="status answered-accepted">
+                            <svg aria-hidden="true" class="svg-icon iconCheckmarkLg" width="36" height="36" viewBox="0 0 36 36"><path d="M6 14l8 8L30 6v8L14 30l-8-8v-8z"></path></svg>
+                        </div>
+                    }
+                    else
+                    {
+                        if (User.Identity.GetUserId() == Model.UserId)
+                        {
+                            <div class="status">
+                                <button class="js-vote-down-btn grid--cell s-btn s-btn__unset c-pointer" onclick="location.href='@Url.Action("AnswerAccepted", "Answers", new { answerId = answer.Id, questionId = Model.Id })'">
+                                    <svg aria-hidden="true" class="svg-icon iconCheckmarkLg" width="36" height="36" viewBox="0 0 36 36"><path d="M6 14l8 8L30 6v8L14 30l-8-8v-8z"></path></svg>
+                                </button>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+            <div class="summary">
+                <div class="excerpt">
+                    @answer.Content
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<p>
+    @Html.ActionLink("Answer The Question", "Create", "Answers", new { questionId = Model.Id }, new { @class = "ws-nowrap s-btn s-btn__primary" })
+    @Html.ActionLink("Back to Questions List", "Index", "", "Home", new { @class = "ws-nowrap s-btn s-btn__primary" })
+</p>
